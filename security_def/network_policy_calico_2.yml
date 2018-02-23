@@ -1,0 +1,19 @@
+apiVersion: extensions/v1beta1
+kind: NetworkPolicy
+metadata:
+  name: allow-world-invocation
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      app: nginx-world
+      tier: backend
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: nginx-hello
+          tier: frontend
+    ports:
+    - protocol: tcp
+      port: 80

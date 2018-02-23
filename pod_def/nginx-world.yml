@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: nginx-world
+spec:
+  replicas: 2
+  selector:
+    app: nginx-world
+    tier: backend
+  template:
+    metadata:
+      name: nginx-world
+      labels:
+        app: nginx-world
+        tier: backend
+    spec:
+      containers:
+      - name: nginx-world
+        image: registry.ng.bluemix.net/leucir_dev/worldapp:v2
+        ports:
+        - containerPort: 80

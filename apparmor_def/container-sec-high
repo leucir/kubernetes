@@ -1,0 +1,86 @@
+#include <tunables/global>
+
+profile container-sec-high flags=(attach_disconnected,mediate_deleted) {
+
+  #include <abstractions/base>
+
+  network,
+  capability,
+  file,
+  umount,
+  deny @{PROC}/sys/fs/** rwklx,
+  deny @{PROC}/fs/** rwklx,
+  deny @{PROC}/sysrq-trigger rwklx,
+  deny @{PROC}/timer_stats rwklx,
+  deny @{PROC}/latency_stats rwklx,
+  deny @{PROC}/kmem rwklx,
+  deny @{PROC}/kcore rwklx,
+  deny @{PROC}/mem rwklx,
+  deny @{PROC}/kmem rwklx,
+  deny @{PROC}/sys/kernel/[^s][^h][^m]* rwklx,
+  deny @{PROC}/sys/kernel/*/** rwklx,
+
+  deny @{PROC}/stat rwklx,
+  deny @{PROC}/locks rwklx,
+  deny @{PROC}/timer_list rwklx,
+  deny @{PROC}/zoneinfo rwklx,
+  deny @{PROC}/modules rwklx,
+  deny @{PROC}/softirqs rwklx,
+  deny @{PROC}/uptime rwklx,
+  deny @{PROC}/version rw,
+  deny @{PROC}/meminfo rwklx,
+  deny @{PROC}/loadavg rwklx,
+  deny @{PROC}/interrupts rwklx,
+  deny @{PROC}/cpuinfo rwklx,
+  deny @{PROC}/schedstat rwklx,
+
+  # Prevent information leaks
+  deny /sys/devices/pnp*/**/{active,cancel,caps,durations,enabled,owned,pcrs,pubek,temp_deactivated,timeouts} rw,
+  deny @{PROC}/sched_debug rw,
+
+  deny mount,
+
+  deny /sys/devices/** rwklx,
+  deny /sys/class/** rwklx,
+
+  deny /sys/[^f]*/** wklx,
+  deny /sys/f[^s]*/** wklx,
+  deny /sys/fs/[^c]*/** wklx,
+  deny /sys/fs/c[^g]*/** wklx,
+  deny /sys/fs/cg[^r]*/** wklx,
+  deny /sys/firmware/efi/efivars/** rwklx,
+  deny /sys/kernel/security/** rwklx,
+  deny /sys/fs/cgroup/net_prio/net_prio.ifpriomap rwklx,
+
+  signal (receive) set=(kill,term) peer=/usr/bin/docker,
+  signal (receive) set=(kill,term) peer=/usr/bin/dockerd///usr/bin/dockercontainerd,
+  signal (receive) set=(int, stp) peer=/usr/bin/dockerd///usr/bin/dockercontainerd,
+  signal (receive) set=(hup, usr1) peer=/usr/bin/dockerd///usr/bin/dockercontainerd,
+
+  #Modules
+  deny /etc/modprobe.d/** rwklx,
+  deny /etc/modules rwklx,
+
+  #iSCSI multipath
+  deny /etc/multipath.conf rwklx,
+
+  #read is allowed for NTP. write is disabled
+  deny /etc/ntp.conf wklx,
+
+  #BESClient
+  deny /opt/BESClient/** rwklx,
+
+  #Nimsoft
+  deny /opt/nimsoft/** rwklx,
+
+  #Potential
+  deny /etc/dnsmasq.d/** rwklx,
+  deny /etc/cloudsight/** rwklx,
+  deny /etc/qemu/** rwklx,
+
+  # To suppress ptrace denials when using
+  ptrace (trace, read) peer=container-sec-high,
+
+  #Container cloud IP address config files from cc-machine package
+  deny /usr/share/cc-config/** rwklx,
+}

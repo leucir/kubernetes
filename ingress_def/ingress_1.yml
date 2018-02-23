@@ -1,0 +1,23 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: service-routing
+  annotations:
+    ingress.bluemix.net/rewrite-path: "serviceName=helloservice rewrite=/hello;serviceName=worldservice rewrite=/world;serviceName=helloservicedeploy rewrite=/hello"
+spec:
+  rules:
+  - host: security-cluster.us-south.containers.mybluemix.net
+    http:
+      paths:
+      - path: /one
+        backend:
+          serviceName: helloservice
+          servicePort: 80
+      - path: /two
+        backend:
+          serviceName: worldservice
+          servicePort: 80
+      - path: /three
+        backend:
+          serviceName: helloservicedeploy
+          servicePort: 80

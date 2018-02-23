@@ -1,0 +1,10 @@
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: openwhiskaction1
+subsets:
+  - addresses:
+      - ip: 192.168.1.8
+      - ip: 192.168.25.32
+    ports:
+      - port: 8883

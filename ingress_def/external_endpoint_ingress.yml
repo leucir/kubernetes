@@ -1,0 +1,13 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingressdef1
+spec:
+  rules:
+  - host: - host: security-cluster.us-south.containers.mybluemix.net
+    http:
+      paths:
+      - path: /op1
+        backend:
+          serviceName: openwhiskactionservice
+          servicePort: 8080

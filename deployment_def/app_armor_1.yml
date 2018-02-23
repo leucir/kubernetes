@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: ibm-security-test
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+         run: ibm-security-test-pod
+      name: ibm-security-test-pod
+      annotations:
+         # Tell Kubernetes to apply the AppArmor profile "container-sec-high".
+         container.apparmor.security.beta.kubernetes.io/ibm-security-test-pod: localhost/container-sec-low
+    spec:
+      containers:
+      - name: ibm-security-test-pod
+        image: nginx
+        ports:
+        - containerPort: 80

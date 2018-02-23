@@ -1,0 +1,74 @@
+#change linux date time
+date -s "2 OCT 2006 18:00:00"
+
+#install ping 
+apt-get update
+apt-get install iputils-ping
+apt-get install wget
+
+
+
+## DNS
+
+#check if kube-dns is working
+kubectl get svc --namespace=kube-system
+
+#check DNS endpoints
+kubectl get ep kube-dns --namespace=kube-system
+
+#Check errors in DNS
+#get DNS pods
+get pods --namespace=kube-system -l k8s-app=kube-dns -o name
+
+#get logs from DNS pods
+kubectl logs --namespace=kube-system <pod_id> -c kubedns
+-c dnsmasq
+-c sidecar
+
+
+
+
+##CALICO
+
+#check calico installation
+kubectl get pods --namespace=kube-system
+
+#enable total isolation
+kubectl annotate ns default "net.beta.kubernetes.io/network-policy={\"ingress\":{\"isolation\":\"DefaultDeny\"}}" --overwrite
+
+#disable total isolation
+kubectl annotate ns default "net.beta.kubernetes.io/network-policy={\"ingress\":{}}" --overwrite
+
+#delete network policy
+kubectl delete networkpolicy <network_policy_name>
+
+
+## SECRETS
+#create a secret from files
+kubectl create secret generic db-user-pass --from-file=./secrets/username.txt --from-file=./secrets/password.txt
+
+
+
+## APP ARMOR
+
+#check if AppArmor is installed
+kubectl get nodes -o=jsonpath=$'{range .items[*]}{@.metadata.name}: {.status.conditions[?(@.reason=="KubeletReady")].message}\n{end}'
+
+#check if armor is configured on the pod
+kubectl get events | grep Created
+
+#create appArmor deployment
+* include —validate when deploying. Yaml seems to be broken.
+
+
+** Name based virtual hosting
+Name-based virtual hosts use multiple host names for the same IP address.
+
+** CIDR
+Classless Inter-Domain Routing
+
+** encoding base64 - command line
+echo -n "1f2d1e2e67df" | base64
+
+** decoding base64 - command line
+echo "MWYyZDFlMmU2N2Rm" | base64 --decode

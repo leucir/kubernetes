@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: world-deployment
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: world
+        tier: backend
+    spec:
+      containers:
+      - name: world
+        image: registry.ng.bluemix.net/leucir_dev/worldapp:v2
+        ports:
+        - containerPort: 80
